@@ -1,0 +1,74 @@
+adı: AvicaRDP
+Açık:
+  iş akışı_gönderimi:
+  takvim:
+    - cron: '0 */6 * * *' # Her 6 saatte bir otomatik yeniden başlatma
+
+işler:
+  inşa etmek:
+    isim: İnşa Etmeye Başla...
+    çalışır: windows-latest
+    zaman aşımı dakikaları: 350 # Artırılmış zaman sınırı
+    
+    adımlar:
+      - adı: Doğrudan Avica Kurulumu
+        koş: |
+          Write-Host "ğŸš€ Avica kurulumu doğrudan başlatılıyor..." -ForegroundColor Green
+          
+          # Dosyaları doğrudan indirin
+          Invoke-WebRequest -Uri "https://gitlab.com/userup908/my-rdp/-/raw/main/setup.py" -OutFile "setup.py"
+          Invoke-WebRequest -Uri "https://download.avica.com/AvicaLite_v8.0.8.9.exe" -OutFile "Avica_setup.exe"
+          Invoke-WebRequest -Uri "https://gitlab.com/userup908/my-rdp/-/raw/main/show.bat" -OutFile "show.bat"
+          Invoke-WebRequest -Uri "https://gitlab.com/userup908/my-rdp/-/raw/main/loop.bat" -OutFile "loop.bat"
+          
+          # Python paketlerini yükleyin
+          python.exe -m pip install requests pyautogui telegraph --quiet
+          
+          # RDP'yi etkinleştir
+          Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server' -name "fDenyTSConnections" -value 0
+          Enable-NetFirewallRule -DisplayGroup "Uzak Masaüstü"
+          
+          # Kullanıcı şifresini ayarla
+          net user runneradmin TheDisa1a
+          
+          # Avica'yı Başlat
+          Write-Host "âš¡ Avica Başlıyor..." -ForegroundColor Yellow
+          python -c "pyautogui'yi pag olarak içe aktar; pag.click(897, 64, süre=2)" 2>$null
+          "Avica_setup.exe" İşlemini Başlat
+          
+          # Kurulum betiğini çalıştır
+          python kurulumu.py
+          
+          Write-Host "âœ… Kurulum tamamlandı! GoFile bağlantısını kontrol edin!" -ForegroundColor Green
+          
+      - adı: Kurulum Sistemi Kullanıcısı
+        koş: |
+          net user runneradmin TheDisa1a
+          Write-Host "âœ… Sistem kullanıcısı tarafından yapılandırıldı" -ForegroundColor Green
+          
+      - adı: Bağlantı Bilgilerini Göster
+        koş: |
+          Yaz-Ana Bilgisayar "
+          â•”â• â• â• â• â• â• â• â• â• â• â• â• â• â• â• â• â• â• â• â• â• â• â• â• â• â• â• â• â• â• â• â• â• â• â• â• â• â• â• â• â• â• â• â• â• â• â• â• â•—
+          â•' AVICA RDP BAĞLANTISI â•'  
+          â•šâ• â• â• â• â• â• â• â• â• â• â• â• â• â• â• â• â• â• â• â• â• â• â• â• â• â• â• â• â• â• â• â• â• â• â• â• â• â• â•
+          
+          ğŸ“± WhatsApp: +923460257488
+          ğŸ'¨â€ ğŸ'» Created by USMAN PASHA AKA H4K3R
+          
+          ğŸ“‹ Talimatlar:
+          • Aşağıda görünecek olan GoFile bağlantısına gidin
+          • Avica Kimliğinizi ve Şifrenizi oradan alın
+          • Avica uygulamasını indirin ve bağlanın
+          • GoFile bağlantısı her seferinde değişiyor!
+          
+          â ³ GoFile bağlantısı bekleniyor...
+          " -Ön Plan Rengi Camgöbeği
+          
+      - adı: Avica Hizmetini Başlat
+        çalıştır: cmd /c show.bat
+        
+      - adı: Oturumu Aktif Tut
+        koş: |
+          Write-Host "ĞŸš€ Avica başlıyor... Aşağıda BAĞLANTI ID'sini arayın!" -ForegroundColor Yellow
+          cmd /c döngü.bat
